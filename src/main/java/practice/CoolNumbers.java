@@ -11,7 +11,6 @@ public class CoolNumbers {
 
     public static List<String> generateCoolNumbers() {
         /*
-        TODO:
             Используйте следующие правила генерации номеров:
             XYZ — различный набор из списка разрешенных букв, N — цифры, R — регион (от 01 до 199);
             XNNNYZR — пример: A111BC197, У777HC66.
