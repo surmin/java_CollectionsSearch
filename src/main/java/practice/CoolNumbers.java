@@ -9,14 +9,8 @@ public class CoolNumbers {
     private static final int TOTAL_NUMBERS = 2_000_000;
 
 
-    public static List<String> generateCoolNumbers() {
-        /*
-            Используйте следующие правила генерации номеров:
-            XYZ — различный набор из списка разрешенных букв, N — цифры, R — регион (от 01 до 199);
-            XNNNYZR — пример: A111BC197, У777HC66.
-            В госномерах автомобилей в РФ используются следующие буквы: А, В, Е, К, М, Н, О, Р, С, Т, У, Х.
-            В коллекции должно быть не менее 2 млн номеров.
-        */
+    public static List<String> generateCoolNumbers1() {
+
         List<String> numbers = new ArrayList<>(TOTAL_NUMBERS);
 
         for (int region = MIN_REGION; region <= MAX_REGION; region++) {
@@ -27,9 +21,7 @@ public class CoolNumbers {
                             if (numbers.size() >= TOTAL_NUMBERS) {
                                 return numbers;
                             }
-                            numbers.add(String.format("%c%d%c%c%02d"
-                                    , firstLetter, digits, secondLetter,
-                                    thirdLetter, region));
+                            numbers.add(String.format("%c%d%c%c%02d", firstLetter, digits, secondLetter, thirdLetter, region));
                         }
                     }
                 }
@@ -39,19 +31,74 @@ public class CoolNumbers {
         return numbers;
     }
 
+    public static List<String> generateCoolNumbers() {
+        List<String> numbers = new ArrayList<>(TOTAL_NUMBERS);
+        StringBuilder sb = new StringBuilder(8);
+
+        int count = 0;
+        for (int region = MIN_REGION; region <= MAX_REGION && count < TOTAL_NUMBERS; region++) {
+            String regionStr = String.format("%02d", region);
+            for (char firstLetter : LETTERS) {
+                for (int digits = 111; digits <= 999; digits += 111) {
+                    String digitsStr = Integer.toString(digits);
+                    for (char secondLetter : LETTERS) {
+                        for (char thirdLetter : LETTERS) {
+                            sb.setLength(0);
+                            sb.append(firstLetter).append(digitsStr).append(secondLetter).append(thirdLetter).append(regionStr);
+                            numbers.add(sb.toString());
+                            count++;
+                            if (count >= TOTAL_NUMBERS) {
+                                return numbers;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return numbers;
+    }
+
+
+    public static List<String> generateCoolNumbers2() {
+        List<String> numbersCars = new ArrayList<>(TOTAL_NUMBERS);
+        String result;
+        for (int i = 0; i < 2_000_000; i++) {
+            int numbers = (int) (Math.random() * 9);
+            int region = (int) (Math.random() * 199);
+            int letter = (int) (Math.random() * LETTERS.length - 1);
+            result = LETTERS[letter] + String.valueOf(numbers);
+            while (result.length() != 4) {
+                //numbers = (int)(Math.random() * 9);
+                //Закоментил чтобы генерировались только блатные номера
+                result += numbers;
+            }
+            while (result.length() != 6) {
+                letter = (int) (Math.random() * LETTERS.length - 1);
+                result += LETTERS[letter];
+            }
+            if (region < 10) {
+                result += "0" + region;
+            } else {
+                result += region;
+            }
+            numbersCars.add(result);
+        }
+        return numbersCars;
+    }
+
     public static boolean bruteForceSearchInList(List<String> list, String number) {
 
         long startTime = System.nanoTime();
-        for (String string : list){
-            if (string.equals(number)){
+        for (String string : list) {
+            if (string.equals(number)) {
                 long endTime = System.nanoTime();
-                System.out.println("BruteForce искали " + number +
-                        " Нашли, потребовалось: " + (endTime - startTime)  + " нс");
+                System.out.println("BruteForce искали " + number + " Нашли, потребовалось: " + (endTime - startTime) + " нс");
                 return true;
-            }        }
+            }
+        }
         long endTime = System.nanoTime();
-        System.out.println("BruteForce искали " + number +
-                " Не нашли, Потребовалось: " + (endTime - startTime)  + " нс");
+        System.out.println("BruteForce искали " + number + " Не нашли, Потребовалось: " + (endTime - startTime) + " нс");
         return false;
     }
 
@@ -59,12 +106,11 @@ public class CoolNumbers {
 
         int result;
         long startTime = System.nanoTime();
-        result = Collections.binarySearch(sortedList,number);
+        result = Collections.binarySearch(sortedList, number);
         long endTime = System.nanoTime();
-        System.out.println("BinSearch искали " + number +
-                " Потребовалось: " + (endTime - startTime)  + " нс");
+        System.out.println("BinSearch искали " + number + " Потребовалось: " + (endTime - startTime) + " нс");
 
-        return result >= 0 ? true: false;
+        return result >= 0;
     }
 
     public static boolean searchInHashSet(HashSet<String> hashSet, String number) {
@@ -73,8 +119,7 @@ public class CoolNumbers {
         long startTime = System.nanoTime();
         result = hashSet.contains(number);
         long endTime = System.nanoTime();
-        System.out.println("HASHSet искали " + number +
-                " Потребовалось: " + (endTime - startTime)  + " нс");
+        System.out.println("HASHSet искали " + number + " Потребовалось: " + (endTime - startTime) + " нс");
         return result;
     }
 
@@ -84,8 +129,7 @@ public class CoolNumbers {
         long startTime = System.nanoTime();
         result = treeSet.contains(number);
         long endTime = System.nanoTime();
-        System.out.println("TreeSet искали " + number +
-                " Потребовалось: " + (endTime - startTime)  + " нс");
+        System.out.println("TreeSet искали " + number + " Потребовалось: " + (endTime - startTime) + " нс");
         return result;
     }
 
